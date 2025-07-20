@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Dashboard - Smart Clinic</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+          font-family: 'Inter', sans-serif;
+          background: linear-gradient(135deg, #6a11cb, #2575fc);
+          min-height: 100vh;
+          margin: 0;
+          padding: 0;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+
+        .container {
+          background-color: white;
+          padding: 30px;
+          border-radius: 12px;
+          width: 90%;
+          max-width: 900px;
+          box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+          text-align: center;
+          margin-bottom: 24px;
+          color: #333;
+        }
+
+        table {
+          width: 100%;
+          border-collapse: collapse;
+          margin-bottom: 20px;
+        }
+
+        th, td {
+          padding: 12px;
+          text-align: left;
+          border: 1px solid #ddd;
+        }
+
+        th {
+          background-color: #f4f4f4;
+        }
+
+        .btn {
+          padding: 10px 18px;
+          background-color: #2575fc;
+          color: white;
+          font-weight: bold;
+          border: none;
+          border-radius: 8px;
+          cursor: pointer;
+          text-decoration: none;
+          margin-right: 10px;
+          transition: background-color 0.3s ease;
+        }
+
+        .btn:hover {
+          background-color: #1a5edc;
+        }
+
+        .actions {
+          text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Bem-vindo ao Painel da Smart Clinic 👨‍⚕️</h2>
+
+    <table id="patientTable">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nome</th>
+            <th>Email</th>
+            <th>Telefone</th>
+            <th>CPF</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- Dados dos pacientes vão aqui -->
+        </tbody>
+    </table>
+
+    <div class="actions">
+        <a class="btn" href="patient.html">Cadastrar Novo Paciente</a>
+        <button class="btn" onclick="logout()">Sair</button>
+    </div>
+</div>
+
+<script>
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      alert("Você precisa estar logado para acessar o dashboard.");
+      window.location.href = "index.html";
+    }
+
+    function logout() {
+      localStorage.removeItem("token");
+      window.location.href = "index.html";
+    }
+
+    async function loadPatients() {
+      try {
+        const response = await fetch("http://localhost:8080/api/patients", {
+          method: "GET",
+          headers: {
+            "Authorization": "Bearer " + token
+          }
+        });
+
+        if (!response.ok) throw new Error("Token inválido ou expirado.");
+
+        const patients = await response.json();
+        const tbody = document.querySelector("#patientTable tbody");
+
+        patients.forEach(p => {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${p.id}</td>
+            <td>${p.name}</td>
+            <td>${p.email}</td>
+            <td>${p.phone || "-"}</td>
+            <td>${p.cpf || "-"}</td>
+          `;
+          tbody.appendChild(row);
+        });
+
+      } catch (error) {
+        alert("Acesso negado. Faça login novamente.");
+        logout();
+      }
+    }
+
+    loadPatients();
+</script>
+
+</body>
+</html>

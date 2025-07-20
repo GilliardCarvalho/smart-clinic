@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Entrar na Smart Clinic</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+        }
+
+        body {
+          font-family: 'Inter', sans-serif;
+          background: linear-gradient(135deg, #6a11cb, #2575fc);
+          height: 100vh;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+
+        .container {
+          background: white;
+          padding: 40px;
+          border-radius: 12px;
+          box-shadow: 0 0 20px rgba(0,0,0,0.1);
+          width: 100%;
+          max-width: 400px;
+          text-align: center;
+        }
+
+        h2 {
+          margin-bottom: 24px;
+          color: #333;
+        }
+
+        input {
+          width: 100%;
+          padding: 12px;
+          margin-bottom: 16px;
+          border-radius: 8px;
+          border: 1px solid #ccc;
+          font-size: 16px;
+        }
+
+        button {
+          width: 100%;
+          padding: 12px;
+          background-color: #2575fc;
+          color: white;
+          font-weight: bold;
+          border: none;
+          border-radius: 8px;
+          cursor: pointer;
+          transition: background 0.3s ease;
+        }
+
+        button:hover {
+          background-color: #1a5edc;
+        }
+
+        #errorMessage {
+          margin-top: 12px;
+          color: red;
+          font-size: 14px;
+        }
+
+        .link-container {
+          margin-top: 16px;
+          font-size: 14px;
+        }
+
+        .link-container a {
+          color: #2575fc;
+          text-decoration: none;
+          font-weight: bold;
+        }
+
+        .link-container a:hover {
+          text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Entrar na Smart Clinic</h2>
+    <form id="loginForm">
+        <input type="text" id="username" placeholder="Usuário" required>
+        <input type="password" id="password" placeholder="Senha" required>
+        <button type="submit">Entrar</button>
+    </form>
+    <p id="errorMessage"></p>
+
+    <div class="link-container">
+        Ainda não tem conta? <a href="register.html">Cadastre-se aqui</a>
+    </div>
+</div>
+
+
+<script src="js/auth.js"></script>
+</body>
+</html>

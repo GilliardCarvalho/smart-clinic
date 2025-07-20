@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Cadastrar Paciente - Smart Clinic</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+          font-family: 'Inter', sans-serif;
+          background: linear-gradient(135deg, #6a11cb, #2575fc);
+          height: 100vh;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+
+        .container {
+          background: white;
+          padding: 40px;
+          border-radius: 12px;
+          box-shadow: 0 0 20px rgba(0,0,0,0.1);
+          width: 100%;
+          max-width: 400px;
+          text-align: center;
+        }
+
+        h2 {
+          margin-bottom: 24px;
+          color: #333;
+        }
+
+        input {
+          width: 100%;
+          padding: 12px;
+          margin-bottom: 16px;
+          border-radius: 8px;
+          border: 1px solid #ccc;
+        }
+
+        button {
+          width: 100%;
+          padding: 12px;
+          background-color: #2575fc;
+          color: white;
+          font-weight: bold;
+          border: none;
+          border-radius: 8px;
+          cursor: pointer;
+          transition: background 0.3s ease;
+          margin-bottom: 10px;
+        }
+
+        button:hover {
+          background-color: #1a5edc;
+        }
+
+        #message {
+          margin-top: 12px;
+          font-size: 14px;
+        }
+
+        .link-button {
+          display: block;
+          text-align: center;
+          text-decoration: none;
+          color: #2575fc;
+          font-weight: 600;
+          margin-top: 10px;
+          transition: color 0.3s ease;
+        }
+
+        .link-button:hover {
+          color: #1a5edc;
+          text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Cadastrar Paciente</h2>
+    <form id="patientForm">
+        <input type="text" id="name" placeholder="Nome completo" required>
+        <input type="email" id="email" placeholder="Email" required>
+        <input type="text" id="phone" placeholder="Telefone" required>
+        <input type="text" id="cpf" placeholder="CPF" required>
+        <button type="submit">Cadastrar</button>
+    </form>
+    <p id="message"></p>
+
+    <!-- Botão Voltar -->
+    <a class="link-button" href="dashboard.html">← Voltar para o Dashboard</a>
+
+    <!-- Botão Sair -->
+    <a class="link-button" href="#" onclick="logout()">Sair da conta</a>
+</div>
+
+<script>
+    document.getElementById("patientForm").addEventListener("submit", async function (e) {
+      e.preventDefault();
+
+      const name = document.getElementById("name").value;
+      const email = document.getElementById("email").value;
+      const phone = document.getElementById("phone").value;
+      const cpf = document.getElementById("cpf").value;
+      const message = document.getElementById("message");
+
+      const token = localStorage.getItem("token");
+
+      try {
+        const response = await fetch("http://localhost:8080/api/patients", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + token
+          },
+          body: JSON.stringify({ name, email, phone, cpf })
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+          message.style.color = "green";
+          message.innerText = "Paciente cadastrado com sucesso!";
+        } else {
+          message.style.color = "red";
+          message.innerText = result.message || "Erro ao cadastrar paciente.";
+        }
+      } catch (error) {
+        message.style.color = "red";
+        message.innerText = "Erro de conexão com o servidor.";
+      }
+    });
+
+    function logout() {
+      localStorage.removeItem("token");
+      window.location.href = "index.html";
+    }
+</script>
+</body>
+</html>

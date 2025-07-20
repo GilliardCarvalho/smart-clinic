@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Criar conta - Smart Clinic</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+        }
+
+        body {
+          font-family: 'Inter', sans-serif;
+          background: linear-gradient(135deg, #6a11cb, #2575fc);
+          height: 100vh;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+
+        .container {
+          background: white;
+          padding: 40px;
+          border-radius: 12px;
+          box-shadow: 0 0 20px rgba(0,0,0,0.1);
+          width: 100%;
+          max-width: 400px;
+          text-align: center;
+        }
+
+        h2 {
+          margin-bottom: 24px;
+          color: #333;
+        }
+
+        input {
+          width: 100%;
+          padding: 12px;
+          margin-bottom: 16px;
+          border-radius: 8px;
+          border: 1px solid #ccc;
+          font-size: 16px;
+        }
+
+        button {
+          width: 100%;
+          padding: 12px;
+          background-color: #2575fc;
+          color: white;
+          font-weight: bold;
+          border: none;
+          border-radius: 8px;
+          cursor: pointer;
+          transition: background 0.3s ease;
+        }
+
+        button:hover {
+          background-color: #1a5edc;
+        }
+
+        #message {
+          margin-top: 12px;
+          font-size: 14px;
+        }
+
+        #message.success {
+          color: green;
+        }
+
+        #message.error {
+          color: red;
+        }
+
+        .link-container {
+          margin-top: 16px;
+          font-size: 14px;
+        }
+
+        .link-container a {
+          color: #2575fc;
+          text-decoration: none;
+          font-weight: bold;
+        }
+
+        .link-container a:hover {
+          text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Criar Conta - Smart Clinic</h2>
+    <form id="registerForm">
+        <input type="text" id="username" placeholder="Usuário" required />
+        <input type="password" id="password" placeholder="Senha" required />
+        <button type="submit">Cadastrar</button>
+    </form>
+    <p id="message"></p>
+
+    <div class="link-container">
+        Já tem conta? <a href="index.html">Fazer login</a>
+    </div>
+</div>
+
+<script>
+    document.getElementById("registerForm").addEventListener("submit", async function (e) {
+      e.preventDefault();
+
+      const username = document.getElementById("username").value;
+      const password = document.getElementById("password").value;
+      const message = document.getElementById("message");
+
+      try {
+        const response = await fetch("http://localhost:8080/api/auth/register", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username, password }),
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+          message.className = "success";
+          message.innerText = result.message || "Usuário cadastrado com sucesso!";
+          setTimeout(() => window.location.href = "index.html", 2000);
+        } else {
+          message.className = "error";
+          message.innerText = result.message || "Erro ao cadastrar.";
+        }
+      } catch (error) {
+        message.className = "error";
+        message.innerText = "Erro de conexão com o servidor.";
+      }
+    });
+</script>
+</body>
+</html>
