@@ -2,6 +2,8 @@ package com.smartclinic.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -14,6 +16,9 @@ public class Doctor {
     private String name;
     private String specialty;
 
+    @ElementCollection
+    private List<LocalDateTime> availableTimes;
+
     @OneToMany(mappedBy = "doctor")
     @JsonIgnore
     private List<Appointment> appointments;
@@ -21,10 +26,11 @@ public class Doctor {
     public Doctor() {
     }
 
-    public Doctor(Long id, String name, String specialty) {
+    public Doctor(Long id, String name, String specialty, List<LocalDateTime> availableTimes) {
         this.id = id;
         this.name = name;
         this.specialty = specialty;
+        this.availableTimes = availableTimes;
     }
 
     // Getters e Setters
@@ -50,6 +56,14 @@ public class Doctor {
 
     public void setSpecialty(String specialty) {
         this.specialty = specialty;
+    }
+
+    public List<LocalDateTime> getAvailableTimes() {
+        return availableTimes;
+    }
+
+    public void setAvailableTimes(List<LocalDateTime> availableTimes) {
+        this.availableTimes = availableTimes;
     }
 
     public List<Appointment> getAppointments() {

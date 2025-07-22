@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Doctor Appointments</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<h1>Doctor - Appointments</h1>
+
+<div>
+    <label for="doctorId">Enter Doctor ID:</label>
+    <input type="number" id="doctorId" placeholder="Ex: 1">
+    <button onclick="loadDoctor()">Load Appointments</button>
+</div>
+
+<div id="doctorDetails" style="margin-top: 20px;"></div>
+<div id="appointmentsList"></div>
+
+<br>
+<a href="dashboard.html">← Back to Dashboard</a>
+
+<script>
+    async function loadDoctor() {
+        const id = document.getElementById('doctorId').value;
+        if (!id) return alert("Please enter a Doctor ID");
+
+        const token = localStorage.getItem("token"); // JWT token
+
+        const response = await fetch(`http://localhost:8080/api/doctors/${id}`, {
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        });
+
+        if (!response.ok) {
+            document.getElementById("doctorDetails").innerHTML = "<p style='color:red;'>Doctor not found or unauthorized.</p>";
+            document.getElementById("appointmentsList").innerHTML = "";
+            return;
+        }
+
+        const doctor = await response.json();
+        document.getElementById("doctorDetails").innerHTML = `
+            <h2>Dr. ${doctor.name} (${doctor.specialty})</h2>
+        `;
+
+        if (doctor.appointments && doctor.appointments.length > 0) {
+            let listHtml = `<h3>Appointments:</h3><ul>`;
+            doctor.appointments.forEach(app => {
+                listHtml += `<li>${app.dateTime} - Patient: ${app.patient.name}</li>`;
+            });
+            listHtml += `</ul>`;
+            document.getElementById("appointmentsList").innerHTML = listHtml;
+        } else {
+            document.getElementById("appointmentsList").innerHTML = "<p>No appointments found.</p>";
+        }
+    }
+</script>
+</body>
+</html>

@@ -14,22 +14,22 @@ public class AppointmentService {
     @Autowired
     private AppointmentRepository appointmentRepository;
 
-    // Retorna todos os agendamentos
+    public Appointment bookAppointment(Appointment appointment) {
+        return appointmentRepository.save(appointment);
+    }
+
     public List<Appointment> getAllAppointments() {
         return appointmentRepository.findAll();
     }
 
-    // Retorna um agendamento por ID
     public Optional<Appointment> getAppointmentById(Long id) {
         return appointmentRepository.findById(id);
     }
 
-    // Cria um novo agendamento
     public Appointment createAppointment(Appointment appointment) {
         return appointmentRepository.save(appointment);
     }
 
-    // Atualiza um agendamento existente
     public Optional<Appointment> updateAppointment(Long id, Appointment updatedAppointment) {
         return appointmentRepository.findById(id)
                 .map(appointment -> {
@@ -41,7 +41,6 @@ public class AppointmentService {
                 });
     }
 
-    // Deleta um agendamento
     public boolean deleteAppointment(Long id) {
         if (appointmentRepository.existsById(id)) {
             appointmentRepository.deleteById(id);

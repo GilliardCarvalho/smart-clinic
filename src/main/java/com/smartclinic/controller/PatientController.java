@@ -16,37 +16,41 @@ public class PatientController {
     @Autowired
     private PatientRepository patientRepository;
 
-
+    // GET - Lista todos os pacientes
     @GetMapping
     public List<Patient> getAllPatients() {
         return patientRepository.findAll();
     }
 
-
+    // GET - Retorna os dados de um paciente específico
     @GetMapping("/{id}")
     public ResponseEntity<Patient> getPatientById(@PathVariable Long id) {
-        return patientRepository.findById(id)
-                .map(ResponseEntity::ok)
+        Optional<Patient> patient = patientRepository.findById(id);
+        return patient.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
-
+    // POST - Cadastra um novo paciente
     @PostMapping
     public Patient createPatient(@RequestBody Patient patient) {
         return patientRepository.save(patient);
     }
 
+    // PUT - Atualiza os dados do paciente
     @PutMapping("/{id}")
     public ResponseEntity<Patient> updatePatient(@PathVariable Long id, @RequestBody Patient updatedPatient) {
         return patientRepository.findById(id)
                 .map(patient -> {
                     patient.setName(updatedPatient.getName());
                     patient.setEmail(updatedPatient.getEmail());
+                    patient.setPhone(updatedPatient.getPhone());
+                    patient.setCpf(updatedPatient.getCpf());
                     return ResponseEntity.ok(patientRepository.save(patient));
                 })
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    // DELETE - Remove paciente
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePatient(@PathVariable Long id) {
         if (patientRepository.existsById(id)) {

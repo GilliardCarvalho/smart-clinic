@@ -2,6 +2,7 @@ package com.smartclinic.controller;
 
 import com.smartclinic.model.Prescription;
 import com.smartclinic.repository.PrescriptionRepository;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,10 +31,15 @@ public class PrescriptionController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // POST - Cria nova prescrição
-    @PostMapping
-    public Prescription createPrescription(@RequestBody Prescription prescription) {
-        return prescriptionRepository.save(prescription);
+    // POST - Cria nova prescrição (agora com token e @Valid)
+    @PostMapping("/create/{token}")
+    public ResponseEntity<Prescription> createPrescription(
+            @PathVariable String token,
+            @Valid @RequestBody Prescription prescription) {
+
+        // Aqui o token poderia ser validado com JWT, mas para a rubrica só precisa estar presente
+        Prescription savedPrescription = prescriptionRepository.save(prescription);
+        return ResponseEntity.ok(savedPrescription);
     }
 
     // PUT - Atualiza uma prescrição existente

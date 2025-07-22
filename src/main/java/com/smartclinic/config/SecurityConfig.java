@@ -4,6 +4,7 @@ import com.smartclinic.security.jwt.JwtAuthFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -29,6 +30,8 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
+
+                        // Endpoints públicos para login/cadastro e recursos estáticos
                         .requestMatchers(
                                 "/api/auth/**",
                                 "/api/users/login",
@@ -37,12 +40,19 @@ public class SecurityConfig {
                                 "/register.html",
                                 "/patient.html",
                                 "/dashboard.html",
-                                "/api/users/patient",
-                                "/css/*",
-                                "/js/*",
-                                "/images/*",
+                                "/css/**",
+                                "/js/**",
+                                "/images/**",
                                 "/favicon.ico"
                         ).permitAll()
+
+                        // Liberação de leitura para pacientes, médicos, consultas e prescrições
+                        .requestMatchers(HttpMethod.GET, "/api/patients/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/doctors/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/appointments/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/prescriptions/**").permitAll()
+
+                        // Todas as demais requisições precisam de autenticação
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

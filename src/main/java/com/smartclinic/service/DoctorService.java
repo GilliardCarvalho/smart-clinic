@@ -5,6 +5,8 @@ import com.smartclinic.repository.DoctorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,6 +36,7 @@ public class DoctorService {
         return doctorRepository.findById(id).map(doctor -> {
             doctor.setName(updatedDoctor.getName());
             doctor.setSpecialty(updatedDoctor.getSpecialty());
+            doctor.setAvailableTimes(updatedDoctor.getAvailableTimes());
             return doctorRepository.save(doctor);
         });
     }
@@ -45,5 +48,19 @@ public class DoctorService {
             return true;
         }
         return false;
+    }
+
+    // NOVO - Retorna os horários disponíveis do médico
+    public List<LocalDateTime> getAvailability(Long doctorId) {
+        return doctorRepository.findById(doctorId)
+                .map(Doctor::getAvailableTimes)
+                .orElse(Collections.emptyList());
+    }
+
+    // OPCIONAL - Simula validação de login do médico (caso precise)
+    public boolean validateLogin(String email, String password) {
+        // Simulação de validação: ajustar conforme seu modelo tiver campo de autenticação
+        // return doctorRepository.findByEmailAndPassword(email, password).isPresent();
+        return true;
     }
 }
